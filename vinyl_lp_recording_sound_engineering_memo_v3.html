@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vinyl LP Recording and Sound Engineering</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Source+Serif+4:opsz,wght@8..60,500;8..60,650;8..60,700&display=swap" rel="stylesheet">
+<style>
+:root {
+    --ink: #1d2a31;
+    --muted: #5a676e;
+    --paper: #f4f1ea;
+    --panel: #fffcf7;
+    --line: #d4d0c8;
+    --accent: #5d7380;
+    --accent-soft: #e7eef1;
+    --warm: #8b6348;
+    --warm-soft: #f3e9df;
+    --good: #3f614f;
+    --shadow: 0 14px 36px rgba(32, 38, 42, 0.09);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; font-size: 18px; }
+@media (min-width: 960px) { html { font-size: 19.5px; } }
+body {
+    margin: 0;
+    background:
+        radial-gradient(1200px 420px at 12% -10%, rgba(255,255,255,.7), transparent 60%),
+        var(--paper);
+    color: var(--ink);
+    font-family: "Source Sans 3", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    line-height: 1.68;
+    font-weight: 400;
+}
+header {
+    background:
+        linear-gradient(180deg, rgba(244,241,234,.18), rgba(244,241,234,.92)),
+        #ece7dc;
+    border-bottom: 1px solid var(--line);
+}
+.header-inner, main, footer {
+    width: min(1220px, calc(100% - 40px));
+    margin: 0 auto;
+}
+.header-inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(220px, .72fr);
+    gap: 36px 48px;
+    align-items: center;
+    padding: 52px 0 40px;
+}
+.eyebrow {
+    color: var(--accent);
+    font-size: .82rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+h1, h2, h3, h4 {
+    font-family: "Source Serif 4", "Iowan Old Style", Georgia, serif;
+    font-weight: 650;
+}
+h1 {
+    max-width: 18ch;
+    margin: 10px 0 16px;
+    font-size: clamp(2.55rem, 5.4vw, 4.15rem);
+    line-height: 1.05;
+    letter-spacing: -0.038em;
+}
+.subtitle {
+    max-width: 46rem;
+    margin: 0;
+    color: var(--muted);
+    font-size: 1.18rem;
+    line-height: 1.55;
+}
+.meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 26px;
+}
+.meta span {
+    background: rgba(255,255,255,.72);
+    border: 1px solid rgba(93,115,128,.22);
+    border-radius: 999px;
+    padding: 7px 13px;
+    color: #42545c;
+    font-size: .92rem;
+    max-width: 100%;
+}
+.header-disc {
+    justify-self: center;
+    width: min(100%, 340px);
+    aspect-ratio: 1;
+    overflow: hidden;
+    border-radius: 50%;
+    background: #111;
+    box-shadow: 0 22px 40px rgba(18, 22, 26, .28);
+}
+.header-disc img {
+    display: block;
+    width: 118%;
+    height: 118%;
+    max-width: none;
+    margin: -9%;
+    object-fit: cover;
+}
+main { padding: 30px 0 64px; }
+.tab-shell {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+.tab-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 12px;
+    background: #efece4;
+    border-bottom: 1px solid var(--line);
+    position: sticky;
+    top: 0;
+    z-index: 4;
+}
+.tab-button {
+    flex: 0 0 auto;
+    appearance: none;
+    border: 1px solid transparent;
+    border-radius: 11px;
+    background: transparent;
+    color: #44545c;
+    cursor: pointer;
+    font: inherit;
+    font-size: 1.02rem;
+    font-weight: 650;
+    padding: 11px 14px;
+    min-height: 46px;
+    white-space: nowrap;
+}
+.tab-button:hover { background: rgba(255,255,255,.72); }
+.tab-button.active {
+    background: #fff;
+    border-color: #cfc9bd;
+    color: var(--ink);
+    box-shadow: 0 2px 10px rgba(39,48,54,.07);
+}
+.tab-panel { display: none; padding: clamp(28px, 4.4vw, 52px); }
+.tab-panel.active { display: block; animation: reveal .22s ease; }
+@keyframes reveal { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+h2 {
+    margin: 0 0 12px;
+    font-size: clamp(1.85rem, 3vw, 2.55rem);
+    line-height: 1.18;
+    letter-spacing: -.025em;
+}
+h3 { margin: 2.1rem 0 10px; font-size: 1.38rem; line-height: 1.28; }
+h4 { margin: 1.5rem 0 8px; font-size: 1.12rem; }
+p { margin: 0 0 1.05rem; }
+.lead {
+    color: var(--muted);
+    font-size: 1.22rem;
+    line-height: 1.58;
+    max-width: 52rem;
+}
+.callout {
+    margin: 1.4rem 0 1.6rem;
+    padding: 1.15rem 1.25rem;
+    border-left: 5px solid var(--accent);
+    border-radius: 0 12px 12px 0;
+    background: var(--accent-soft);
+    font-size: 1.04rem;
+}
+.callout.warm { border-left-color: var(--warm); background: var(--warm-soft); }
+.callout strong { display: block; margin-bottom: .35rem; font-size: 1.02rem; }
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin: 1.35rem 0; }
+.card {
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: #fbfaf6;
+    padding: 1.15rem 1.2rem;
+}
+.card h3, .card h4 { margin-top: 0; }
+.card p:last-child, .card ul:last-child { margin-bottom: 0; }
+ul, ol { padding-left: 1.4rem; margin: 0 0 1.15rem; }
+li { margin: .42rem 0; }
+table { width: 100%; border-collapse: collapse; margin: 1.2rem 0 1.7rem; font-size: 1.02rem; }
+th, td { padding: 13px 14px; border: 1px solid var(--line); text-align: left; vertical-align: top; }
+th { background: #ebe7de; color: #314249; font-weight: 650; }
+tr:nth-child(even) td { background: #faf8f3; }
+.formula {
+    display: inline-block;
+    margin: 4px 0;
+    padding: 6px 12px;
+    border: 1px solid #d6d2c9;
+    border-radius: 8px;
+    background: #f3f0ea;
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-size: .98rem;
+}
+.small { color: var(--muted); font-size: .95rem; }
+.shots {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+    margin: 1.5rem 0 1.7rem;
+}
+.shot {
+    margin: 1.45rem 0 1.7rem;
+    background: #16191b;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid #2a3034;
+}
+.shot.light {
+    background: #fff;
+    border-color: var(--line);
+}
+.shot img, .shot svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    background: #111;
+}
+.shot.light img, .shot.light svg { background: #fff; }
+.shot.cover img {
+    height: 360px;
+    object-fit: cover;
+}
+.shot.portrait {
+    max-width: 32rem;
+    margin-left: auto;
+    margin-right: auto;
+}
+.shot figcaption {
+    padding: 14px 16px 16px;
+    background: #f7f4ee;
+    color: #3d4a51;
+    font-size: .95rem;
+    line-height: 1.5;
+    border-top: 1px solid var(--line);
+}
+.shot-title {
+    display: block;
+    color: var(--ink);
+    font-weight: 700;
+    font-size: 1.02rem;
+    margin-bottom: .2rem;
+}
+.credit {
+    display: block;
+    margin-top: .45rem;
+    color: #7a858b;
+    font-size: .82rem;
+}
+.shots .shot { margin: 0; }
+.wide { grid-column: 1 / -1; }
+.riaa-lab {
+    margin: 1.45rem 0 1.7rem;
+    padding: 1.15rem 1.2rem 1.3rem;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: #fbfaf6;
+}
+.riaa-lab-title {
+    font-family: "Source Serif 4", Georgia, serif;
+    font-size: 1.28rem;
+    font-weight: 650;
+    margin: 0 0 .35rem;
+}
+.riaa-lab .small { margin-bottom: .9rem; }
+.riaa-slider {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 12px;
+    align-items: center;
+    margin: 0 0 1rem;
+    font-weight: 650;
+}
+.riaa-slider input[type="range"] {
+    width: 100%;
+    accent-color: var(--warm);
+}
+.riaa-slider strong {
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-size: 1.02rem;
+    min-width: 7.5rem;
+    text-align: right;
+}
+.riaa-meters {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+    margin: 0 0 1rem;
+}
+.riaa-meters div {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: .55rem .7rem .6rem;
+    color: var(--muted);
+    font-size: .88rem;
+}
+.riaa-meters b {
+    display: block;
+    color: var(--ink);
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-size: 1.08rem;
+    margin-top: .15rem;
+}
+.riaa-waves {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+}
+.riaa-wave-card {
+    background: #1c2428;
+    border-radius: 12px;
+    padding: 10px 12px 8px;
+    color: #c5d0d5;
+    font-size: .88rem;
+    font-weight: 650;
+}
+.riaa-wave-card span { display: block; margin-bottom: 4px; }
+.riaa-wave-card svg { display: block; width: 100%; height: 92px; }
+.riaa-wave-card polyline {
+    fill: none;
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+.riaa-groove {
+    margin-top: 1rem;
+}
+.riaa-groove span {
+    display: block;
+    color: var(--muted);
+    font-size: .88rem;
+    font-weight: 650;
+    margin-bottom: .4rem;
+}
+.riaa-groove-track {
+    height: 18px;
+    border-radius: 999px;
+    background: #e8e2d8;
+    overflow: hidden;
+}
+.riaa-groove-track > div {
+    height: 100%;
+    width: 12%;
+    border-radius: 999px;
+    background: #c45c48;
+}
+@media (max-width: 860px) {
+    .riaa-slider { grid-template-columns: 1fr; }
+    .riaa-slider strong { text-align: left; }
+    .riaa-meters, .riaa-waves { grid-template-columns: 1fr 1fr; }
+    .riaa-waves { grid-template-columns: 1fr; }
+}
+footer { padding: 0 0 42px; color: var(--muted); font-size: .95rem; }
+footer details { margin-top: 10px; }
+footer summary { cursor: pointer; }
+@media (max-width: 860px) {
+    html { font-size: 17.5px; }
+    .header-inner {
+        grid-template-columns: 1fr;
+        padding: 34px 0 28px;
+    }
+    .header-disc { width: min(72%, 280px); order: -1; }
+    .grid, .shots { grid-template-columns: 1fr; }
+    .tab-nav { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: thin; }
+    .tab-panel { padding: 22px 16px 30px; }
+    .tab-button { flex: 0 0 auto; font-size: .95rem; }
+    .shot.cover img { height: 240px; }
+    table { display: block; overflow-x: auto; }
+}
+@media print {
+    body { background: white; }
+    .header-inner, main, footer { width: 100%; }
+    .tab-shell { border: 0; box-shadow: none; }
+    .tab-nav { display: none; }
+    .tab-panel { display: block !important; page-break-before: always; padding: 28px 0; }
+    .tab-panel:first-of-type { page-break-before: auto; }
+    .shot { break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div>
+      <div class="eyebrow">Structured technical memo</div>
+      <h1>Vinyl LP Recording and Sound Engineering</h1>
+      <p class="subtitle">How groove geometry, rotational speed, programme length and playback mechanics shape vinyl mastering, and why disciplined engineering can produce an especially coherent listening experience despite the medium's compromises.</p>
+      <div class="meta"><span>Scope: recording, cutting, pressing and playback</span><span>Format: tabbed reference memo</span><span>Prepared: 27 August 2026</span></div>
+    </div>
+    <figure class="header-disc">
+      <img src="images/lp-angle.jpg" alt="A 12-inch vinyl LP seen almost face-on, showing the spiral groove from the outer edge to the label.">
+    </figure>
+  </div>
+</header>
+<main>
+<div class="tab-shell">
+<nav class="tab-nav" role="tablist" aria-label="Memo sections">
+  <button class="tab-button active" role="tab" aria-selected="true" aria-controls="overview" id="tab-overview">1. Overview</button>
+  <button class="tab-button" role="tab" aria-selected="false" aria-controls="groove" id="tab-groove">2. Groove &amp; stereo</button>
+  <button class="tab-button" role="tab" aria-selected="false" aria-controls="speed" id="tab-speed">3. Speed &amp; sequencing</button>
+  <button class="tab-button" role="tab" aria-selected="false" aria-controls="spectrum" id="tab-spectrum">4. Bass, treble &amp; dynamics</button>
+  <button class="tab-button" role="tab" aria-selected="false" aria-controls="riaa" id="tab-riaa">5. RIAA equalization</button>
+  <button class="tab-button" role="tab" aria-selected="false" aria-controls="playback" id="tab-playback">6. Playback limitations</button>
+  <button class="tab-button" role="tab" aria-selected="false" aria-controls="craft" id="tab-craft">7. Engineering craft</button>
+  <button class="tab-button" role="tab" aria-selected="false" aria-controls="summary" id="tab-summary">8. Summary</button>
+</nav>
+
+<section class="tab-panel active" id="overview" role="tabpanel" aria-labelledby="tab-overview">
+  <h2>Purpose and central argument</h2>
+  <p class="lead">A vinyl LP is a mechanical storage and reproduction system. Sound must be converted into physical groove movement, traced by a stylus and converted back into an electrical signal. Every production decision must therefore respect geometry, available surface area and the ability of real playback equipment to track the groove.</p>
+  <div class="callout"><strong>Central argument</strong>Many characteristics attributed to “vinyl sound” arise from the compromises needed to make the medium work. Yet these constraints can encourage disciplined mixing, mastering and sequencing. A carefully engineered vinyl edition may consequently offer a more balanced or engaging experience, even though vinyl is not technically more accurate than high-quality digital audio.</div>
+  <div class="shots">
+    <figure class="shot cover">
+      <img src="images/lathe-vms70.jpg" alt="Neumann VMS-70 disc-cutting lathe in a mastering room, with platter, cutter carriage, meters and inspection microscope.">
+      <figcaption>
+        <span class="shot-title">Cutting the master</span>
+        A Neumann VMS-70 lathe engraves the programme as a spiral groove in a lacquer-coated disc. Pitch, depth and level are set here; they cannot be “fixed in the mix” after the cut.
+        <span class="credit">Wikimedia Commons · VACANT FEVER · CC BY-SA 2.0</span>
+      </figcaption>
+    </figure>
+    <figure class="shot cover">
+      <img src="images/record-press.jpg" alt="Metal record-press mould with a stamper mounted, showing the circular disc face that imprints grooves into vinyl.">
+      <figcaption>
+        <span class="shot-title">Pressing the copies</span>
+        Stampers mounted in a press mould the heated vinyl. Manufacturing variation at this stage can add noise, off-centre holes or incomplete groove definition.
+        <span class="credit">Wikimedia Commons · geni · CC BY-SA 4.0</span>
+      </figcaption>
+    </figure>
+  </div>
+  <div class="grid">
+    <div class="card"><h3>What the medium constrains</h3><ul><li>Low-frequency amplitude and stereo width</li><li>High-frequency and transient intensity</li><li>Programme length and cutting level</li><li>Track placement across each side</li><li>Mechanical tracking and playback tolerance</li></ul></div>
+    <div class="card"><h3>What engineers control</h3><ul><li>Bass centring and phase compatibility</li><li>De-essing and transient management</li><li>Dynamic range and perceived loudness</li><li>Groove spacing, cutting level and side length</li><li>Album sequence and vinyl-specific mastering</li></ul></div>
+  </div>
+  <h3>Where the compromises occur</h3>
+  <ol><li><strong>Mixing:</strong> decisions about stereo placement, phase, bass, brightness and dynamics.</li><li><strong>Mastering:</strong> adaptation of the final mix to the physical limits of the disc.</li><li><strong>Lacquer cutting:</strong> conversion of the electrical signal into a modulated spiral groove.</li><li><strong>Pressing:</strong> replication of that groove, with possible manufacturing variation.</li><li><strong>Playback:</strong> tracing accuracy, turntable speed, alignment, stylus profile and phono-stage equalization.</li></ol>
+</section>
+
+<section class="tab-panel" id="groove" role="tabpanel" aria-labelledby="tab-groove">
+  <h2>Groove geometry, stereo encoding and cross-channel interaction</h2>
+  <p class="lead">Stereo is not recorded as two separate grooves. Both channels are encoded into the two walls of one V-shaped groove, commonly using a 45/45 system.</p>
+  <h3>How stereo is represented</h3>
+  <p>The groove's lateral, side-to-side component primarily represents the summed signal, while its vertical component reflects the difference between channels:</p>
+  <p><span class="formula">L + R → lateral component</span><br><span class="formula">L − R → vertical component</span></p>
+  <figure class="shot">
+    <img src="images/stereo-45.png" alt="Diagram of cutter or stylus motion: lateral mono-style movement, vertical difference movement, and the 45/45 stereo system with left and right walls.">
+    <figcaption>
+      <span class="shot-title">From lateral/vertical to 45/45</span>
+      Left: a groove can move sideways (sum) with little change of depth. Centre: a large difference signal moves the cutter up and down. Right: the 45/45 system records left and right on the two groove walls, 90° apart. That is the commercial stereo LP standard.
+      <span class="credit">Wikimedia Commons · Retired electrician · CC0</span>
+    </figcaption>
+  </figure>
+  <p>In-phase, centred material therefore produces mostly lateral movement. Strong out-of-phase or widely separated information produces more vertical movement. Excessive vertical modulation is harder to cut and track and can make a groove shallow or mechanically unstable.</p>
+  <h3>“Crossing over” of tracks or channels</h3>
+  <p>Several different effects are sometimes described informally as crossover:</p>
+  <table><thead><tr><th>Effect</th><th>What is actually happening</th><th>Likely consequence</th></tr></thead><tbody>
+  <tr><td>Left/right crosstalk</td><td>The cartridge and groove geometry do not provide perfect channel separation.</td><td>A narrower stereo image than the source or a small amount of one channel appearing in the other.</td></tr>
+  <tr><td>Adjacent-groove pre-echo</td><td>A loud groove can influence an adjacent groove during cutting or pressing.</td><td>A faint preview, often one revolution before a loud transient.</td></tr>
+  <tr><td>Out-of-phase low-frequency stereo</td><td>Large L−R bass content creates excessive vertical groove motion.</td><td>Mistracking, distortion, reduced cutting level or, in severe cases, skipping.</td></tr>
+  </tbody></table>
+  <figure class="shot">
+    <img src="images/groove-sem.jpg" alt="Three-part image: a cut disc sample, a scanning-electron micrograph of parallel LP grooves, and a closer SEM view of one groove wall.">
+    <figcaption>
+      <span class="shot-title">What the groove actually looks like</span>
+      Scanning electron micrographs of an LP surface. The middle panel shows packed microgrooves; the right panel is a single wall at a much finer scale. Dust, wear and wall damage at this size become clicks, hiss and tracing error.
+      <span class="credit">Wikimedia Commons · Tbraunstein · CC BY-SA 3.0</span>
+    </figcaption>
+  </figure>
+  <h3>Heavy stereo drums</h3>
+  <p>Kick drums, floor toms and low-frequency drum ambience can create large excursions, particularly when hard-panned, decorrelated or processed with stereo widening. Fast peaks also demand rapid stylus acceleration. The concern is therefore not simply “heavy drums”; it is the combination of low-frequency energy, phase difference, transient intensity and stereo placement.</p>
+  <div class="callout warm"><strong>Typical engineering response</strong>Centre the deepest bass, narrow the low end below a selected crossover region, correct problematic phase relationships, control isolated transients and retain stereo width higher in the spectrum where it is mechanically safer.</div>
+  <p>There is no single mandatory crossover frequency. A mastering engineer may begin investigating somewhere around 100 to 300 Hz, but the appropriate treatment depends on level, duration, phase, side length and the cutting system.</p>
+</section>
+
+<section class="tab-panel" id="speed" role="tabpanel" aria-labelledby="tab-speed">
+  <h2>Constant rotational speed, variable linear speed</h2>
+  <p class="lead">An LP rotates at a constant angular speed, usually 33⅓ rpm. The groove does not pass the stylus at a constant linear speed: it travels much faster at the outer edge than near the label.</p>
+  <p><span class="formula">linear speed = 2π × groove radius × revolutions per second</span></p>
+  <p>Because the groove radius decreases continuously, the physical distance available to represent one second of music also decreases. The wavelength of every recorded frequency becomes shorter toward the centre.</p>
+  <figure class="shot cover">
+    <img src="images/groove-macro.jpg" alt="Macro photograph of vinyl grooves, with tightly packed parallel lines curving across the frame.">
+    <figcaption>
+      <span class="shot-title">A spiral with shrinking circumference</span>
+      Each revolution is a shorter physical path than the one outside it. High frequencies that look generous in the outer grooves become microscopic near the label.
+      <span class="credit">Wikimedia Commons · Evan-Amos · public domain</span>
+    </figcaption>
+  </figure>
+  <table><thead><tr><th>Disc location</th><th>Linear groove speed</th><th>Engineering implication</th></tr></thead><tbody>
+  <tr><td>Outer grooves</td><td>Highest</td><td>More physical groove length per second, allowing cleaner high frequencies, transients and complex material.</td></tr>
+  <tr><td>Middle of side</td><td>Moderate</td><td>Generally robust, but programme level and density increasingly matter.</td></tr>
+  <tr><td>Inner grooves</td><td>Lowest</td><td>Shorter recorded wavelengths, greater tracing difficulty and increased distortion risk.</td></tr>
+  </tbody></table>
+  <h3>Inner-groove distortion</h3>
+  <p>Near the label, high-frequency groove modulations become extremely compact. The playback stylus cannot trace them as perfectly as the cutting stylus created them. Distortion, sibilance and loss of high-frequency clarity can therefore increase toward the end of a side.</p>
+  <h3>Sequencing as sound engineering</h3>
+  <p>Track order is not purely artistic. Engineers may place the loudest, brightest or most demanding track near the beginning of a side and reserve quieter, less dense material for the inner grooves. Ballads or tracks with simpler arrangements can be more tolerant of the reduced linear speed.</p>
+  <h3>33⅓ rpm versus 45 rpm</h3>
+  <p>A 45 rpm cut provides higher linear speed at the same radius. This can improve transient definition, high-frequency tracing and signal-to-noise performance, but it consumes more groove length per minute. The trade-off is shorter playing time or more discs.</p>
+  <div class="callout"><strong>Clarification</strong>The turntable does not deliberately vary its rotational speed across the side. It is the surface speed under the stylus that changes because the groove radius changes.</div>
+</section>
+
+<section class="tab-panel" id="spectrum" role="tabpanel" aria-labelledby="tab-spectrum">
+  <h2>Bass, treble, transients, level and programme length</h2>
+  <figure class="shot portrait">
+    <img src="images/groove-closeup.jpg" alt="Microscope view of an LP: a quiet, tightly packed groove field interrupted by a much wider, brightly lit modulated groove.">
+    <figcaption>
+      <span class="shot-title">Loudness is width</span>
+      Under a microscope a heavily modulated passage is physically wider than the quiet grooves around it. Bass, peaks and a high cutting level consume land; a long, loud side has nowhere left to go.
+      <span class="credit">Wikimedia Commons · Piano Piano! · CC BY 2.0</span>
+    </figcaption>
+  </figure>
+  <h3>Low frequencies</h3>
+  <p>Deep bass produces large groove excursions. If those frequencies differ strongly between channels, they also create substantial vertical motion. Mastering commonly uses low-frequency centring, elliptical equalization, phase correction or selective attenuation. Subsonic content that has no musical value may be removed because it wastes groove area and can unsettle playback systems.</p>
+  <h3>High frequencies and sibilance</h3>
+  <p>High-frequency signals create very fine, rapidly changing modulations. Strong vocal sibilance, hi-hats, cymbals and bright distortion can challenge both the cutter head and the playback stylus. The master may require de-essing, dynamic equalization or modest high-frequency control.</p>
+  <h3>Transient material</h3>
+  <p>Short peaks such as kick and snare attacks can require high groove velocity and acceleration. Engineers may shape only the problematic peaks rather than compressing the entire mix, preserving impact while maintaining trackability.</p>
+  <h3>Programme length versus level</h3>
+  <table><thead><tr><th>Condition</th><th>Required compromise</th><th>Expected result</th></tr></thead><tbody>
+  <tr><td>Short side</td><td>Grooves can be spaced more generously and cut at a higher level.</td><td>Potentially stronger dynamics and better signal-to-noise performance.</td></tr>
+  <tr><td>Long side</td><td>Grooves must be packed more closely and usually cut more quietly.</td><td>Less margin above surface noise and less tolerance for extreme bass or dynamics.</td></tr>
+  <tr><td>Very loud or bass-heavy programme</td><td>Wider groove excursions consume more disc area.</td><td>Reduced available playing time or the need for level and spectral control.</td></tr>
+  </tbody></table>
+  <h3>Dynamic range</h3>
+  <p>Vinyl does not have greater technical dynamic range than modern digital formats. Loud signals consume physical space; very quiet signals approach the mechanical noise floor. The useful result is nevertheless programme-dependent: a well-judged vinyl master can preserve musically meaningful contrasts without chasing maximum numerical loudness.</p>
+  <figure class="shot cover">
+    <img src="images/grooves-33.jpg" alt="Warm-toned macro of LP grooves with visible dust specks on the vinyl surface.">
+    <figcaption>
+      <span class="shot-title">The noise floor is physical</span>
+      Dust, filler particles and surface texture sit in the same size range as quiet treble modulation. A lower cutting level, or a side packed too tightly, brings music closer to that grain.
+      <span class="credit">Wikimedia Commons · Feelthelie · CC BY-SA 3.0</span>
+    </figcaption>
+  </figure>
+</section>
+
+<section class="tab-panel" id="riaa" role="tabpanel" aria-labelledby="tab-riaa">
+  <h2>RIAA equalization</h2>
+  <p class="lead">RIAA equalization is a complementary recording and playback system. The frequency balance is deliberately altered during lacquer cutting and restored by the phono preamplifier during playback.</p>
+  <figure class="shot light">
+    <img src="images/riaa-transform.svg" alt="Three columns of waveforms showing 50 Hz, 1 kHz and 10 kHz tones at equal level, after recording EQ, and after playback EQ, plus a graph of groove displacement versus frequency with and without RIAA.">
+    <figcaption>
+      <span class="shot-title">The same three tones, before and after the transform</span>
+      Wave height is linear voltage, shared across a row. Recording EQ shrinks the bass and enlarges the treble so the groove can carry both. Playback EQ is the exact inverse, so column 3 matches column 1. The lower plot is the physical consequence: bass grooves become manageable, treble sits further above surface noise.
+    </figcaption>
+  </figure>
+  <div class="riaa-lab" id="riaa-lab">
+    <div class="riaa-lab-title">Sweep a tone through the transform</div>
+    <p class="small">Move the frequency. The middle trace is the electrical signal after recording EQ — what is cut. The right trace is after the complementary playback EQ. The bar is groove displacement relative to the same tone at 1 kHz with RIAA applied.</p>
+    <label class="riaa-slider">
+      <span>Frequency</span>
+      <input type="range" id="riaa-freq" min="1.301" max="4.301" step="0.002" value="3" aria-valuemin="20" aria-valuemax="20000" aria-valuenow="1000">
+      <strong id="riaa-freq-read">1.00 kHz</strong>
+    </label>
+    <div class="riaa-meters">
+      <div>Recording EQ<b id="riaa-rec">0.0 dB</b></div>
+      <div>Playback EQ<b id="riaa-play">0.0 dB</b></div>
+      <div>Net (play + rec)<b id="riaa-net">0.0 dB</b></div>
+      <div>Groove vs 1 kHz<b id="riaa-grv">1.00×</b></div>
+    </div>
+    <div class="riaa-waves">
+      <div class="riaa-wave-card">
+        <span>Original</span>
+        <svg viewBox="0 0 320 90" preserveAspectRatio="none" aria-hidden="true"><polyline id="riaa-w0" stroke="#7eb0c4" points=""/></svg>
+      </div>
+      <div class="riaa-wave-card">
+        <span>After recording EQ</span>
+        <svg viewBox="0 0 320 90" preserveAspectRatio="none" aria-hidden="true"><polyline id="riaa-w1" stroke="#e08a74" points=""/></svg>
+      </div>
+      <div class="riaa-wave-card">
+        <span>After playback EQ</span>
+        <svg viewBox="0 0 320 90" preserveAspectRatio="none" aria-hidden="true"><polyline id="riaa-w2" stroke="#7fa88f" points=""/></svg>
+      </div>
+    </div>
+    <div class="riaa-groove">
+      <span>Relative groove excursion at this frequency</span>
+      <div class="riaa-groove-track"><div id="riaa-groove-bar"></div></div>
+    </div>
+  </div>
+  <figure class="shot light">
+    <img src="images/riaa-curve-labeled.svg" alt="Graph of complementary RIAA curves: playback boosts bass and cuts treble; recording does the inverse, with turnover regions near 50 Hz, 500 Hz and 2.12 kHz.">
+    <figcaption>
+      <span class="shot-title">The complementary transfer functions</span>
+      Relative to 1 kHz, playback is about +19.3 dB at 20 Hz and −19.6 dB at 20 kHz. The dashed markers are the standardized turnovers at 50 Hz, 500 Hz and 2.12 kHz. The curve is continuous, not a set of brick-wall filters.
+      <span class="credit">Redrawn from the RIAA time constants (3180 µs, 318 µs, 75 µs).</span>
+    </figcaption>
+  </figure>
+  <div class="grid">
+    <div class="card"><h3>During cutting</h3><ul><li>Low frequencies are attenuated.</li><li>High frequencies are boosted.</li><li>Bass excursions become smaller, saving groove area.</li><li>High-frequency information is recorded farther above the surface-noise floor.</li></ul></div>
+    <div class="card"><h3>During playback</h3><ul><li>The phono stage boosts the bass.</li><li>It attenuates the treble by the complementary amount.</li><li>The intended tonal balance is reconstructed.</li><li>High-frequency surface hiss is reduced along with the treble correction.</li></ul></div>
+  </div>
+  <h3>Why it is necessary</h3>
+  <p>Cutting an uncorrected full-frequency signal would be inefficient. Deep bass would occupy excessive width, sharply reduce playing time and create tracking problems. At the other end of the spectrum, surface noise would be too prominent relative to the recorded treble. Pre-emphasis and complementary de-emphasis address both problems.</p>
+  <h3>The standardized curve</h3>
+  <p>The RIAA characteristic is defined through three time constants, approximately corresponding to turnover regions at 50 Hz, 500 Hz and 2.12 kHz. The transitions are gradual rather than abrupt. Relative to the midband, bass is strongly reduced during cutting and treble strongly increased; playback applies the inverse response.</p>
+  <table><thead><tr><th>Region</th><th>Cutting tendency</th><th>Playback tendency</th><th>Purpose</th></tr></thead><tbody>
+  <tr><td>Low bass</td><td>Attenuate</td><td>Boost</td><td>Limit groove excursion and conserve space.</td></tr>
+  <tr><td>Midrange</td><td>Transition/reference region</td><td>Complementary transition</td><td>Maintain a standardized reconstruction.</td></tr>
+  <tr><td>High frequencies</td><td>Boost</td><td>Attenuate</td><td>Improve effective signal-to-noise performance and suppress playback hiss.</td></tr>
+  </tbody></table>
+  <h3>Why the phono stage matters</h3>
+  <p>A phono preamplifier is not merely increasing a cartridge's small output. It also applies the inverse RIAA curve with sufficient accuracy, gain and headroom. Deviations can alter tonal balance; inadequate overload margin can distort strong transients; cartridge loading can further affect the response.</p>
+  <div class="shots">
+    <figure class="shot cover">
+      <img src="images/phono-preamp.jpg" alt="Open chassis of a phono preamplifier, showing batteries, circuit boards, relays and gold RCA connectors.">
+      <figcaption>
+        <span class="shot-title">Gain plus the inverse curve</span>
+        A phono stage does two jobs: it raises a millivolt-level cartridge signal, and it applies the playback equalization. Component tolerance, topology and overload margin all colour what you hear.
+        <span class="credit">Wikimedia Commons · Retired electrician · CC0</span>
+      </figcaption>
+    </figure>
+    <figure class="shot cover">
+      <img src="images/turntable.jpg" alt="Technics direct-drive turntable with dust cover raised, record on the platter and tonearm on its rest.">
+      <figcaption>
+        <span class="shot-title">The rest of the playback chain</span>
+        Accurate RIAA only helps if the turntable, arm and cartridge present a clean, well-tracked signal. Speed stability, geometry and a suitable stylus profile come first.
+        <span class="credit">Wikimedia Commons · Franz van Duns · CC BY-SA 4.0</span>
+      </figcaption>
+    </figure>
+  </div>
+  <div class="callout warm"><strong>Important distinction</strong>RIAA equalization does not eliminate clicks, scratches or pressing defects. Its treble attenuation reduces some high-frequency noise during playback, but impulsive defects can remain plainly audible.</div>
+  <h3>Historical standardization</h3>
+  <p>The RIAA standard was formally approved in January 1954 after a period in which record labels used many incompatible equalization curves. The standard rapidly became the industry reference and was already assumed by the stereo LP era. Before standardization, accurate playback often required label-specific equalization settings.</p>
+  <h3>Constant amplitude versus constant velocity</h3>
+  <p>This distinction explains why disc equalization is necessary. Groove modulation can be described either by the stylus displacement, meaning how far it moves, or by stylus velocity, meaning how quickly that displacement changes.</p>
+  <div class="grid">
+    <div class="card">
+      <h3>Constant amplitude</h3>
+      <p>The groove excursion remains the same as frequency changes. Because velocity rises with frequency, doubling the frequency doubles the stylus velocity for the same displacement.</p>
+      <p><span class="formula">velocity = 2π × frequency × amplitude</span></p>
+    </div>
+    <div class="card">
+      <h3>Constant velocity</h3>
+      <p>Stylus velocity remains constant as frequency changes. Groove displacement is therefore inversely proportional to frequency: doubling the frequency halves the physical excursion.</p>
+      <p><span class="formula">amplitude = velocity ÷ (2π × frequency)</span></p>
+    </div>
+  </div>
+  <table><thead><tr><th>Recording behaviour</th><th>Benefit</th><th>Problem if used across the full spectrum</th></tr></thead><tbody>
+  <tr><td>Constant amplitude</td><td>Keeps high-frequency groove modulation physically large enough to remain above surface irregularities.</td><td>Velocity and acceleration become excessive at high frequencies, placing heavy demands on the cutter and playback stylus.</td></tr>
+  <tr><td>Constant velocity</td><td>Prevents low-frequency displacement from expanding without limit and consuming excessive groove width.</td><td>High-frequency groove excursions become extremely small and increasingly vulnerable to surface noise and tracing limitations.</td></tr>
+  </tbody></table>
+  <p>The practical solution is a compound characteristic rather than either behaviour alone. The RIAA curve uses its turnover regions to move between regimes: it controls low-frequency excursion, maintains workable modulation through the midrange and applies high-frequency pre-emphasis so that treble is recorded sufficiently above the surface-noise floor. The complementary playback curve then reconstructs the intended tonal balance.</p>
+  <div class="callout"><strong>Why the 500 Hz turnover matters</strong>The 318 µs time constant, equivalent to approximately 500.5 Hz, is the central transition between the low-frequency and mid-frequency behaviours of the standardized curve. It is not a brick-wall crossover; the response changes progressively around it.</div>
+  <h3>Exact RIAA time constants and turnover frequencies</h3>
+  <table><thead><tr><th>Time constant</th><th>Equivalent frequency</th><th>Role</th></tr></thead><tbody>
+  <tr><td>3180 µs</td><td>50.05 Hz</td><td>Low-frequency shelf</td></tr>
+  <tr><td>318 µs</td><td>500.5 Hz</td><td>Turnover region</td></tr>
+  <tr><td>75 µs</td><td>2122 Hz</td><td>High-frequency pre-emphasis/de-emphasis region</td></tr>
+  </tbody></table>
+  <p>Relative to 1 kHz, the playback curve is approximately +19.3 dB at 20 Hz, +17 dB at 50 Hz, +13.2 dB at 100 Hz, −13.7 dB at 10 kHz and −19.5 dB at 20 kHz.</p>
+  <h3>How RIAA equalization is implemented</h3>
+  <p>A phono preamplifier performs two separate functions: significant gain for the very small cartridge signal and application of the inverse RIAA playback curve. Implementations generally fall into three families:</p>
+  <ul>
+    <li><strong>Passive RIAA:</strong> gain stage, passive RC equalization network, then additional gain.</li>
+    <li><strong>Active RIAA:</strong> the RIAA network is incorporated within an amplifier feedback loop.</li>
+    <li><strong>Integrated phono stages:</strong> op-amp or dedicated phono IC based designs using precision external resistor-capacitor networks.</li>
+  </ul>
+  <h3>Why phono preamps can sound different</h3>
+  <p>Unlike digital playback, phono reproduction depends significantly on the quality of the equalization stage. Differences arise from RIAA accuracy, component tolerances, overload margin, noise performance, cartridge loading and circuit topology. High-end designs commonly target RIAA accuracy better than ±0.1 dB, whereas inexpensive designs may deviate by several dB at frequency extremes. Consequently the phono preamplifier is one of the most influential components in the analogue playback chain.</p>
+</section>
+
+<section class="tab-panel" id="playback" role="tabpanel" aria-labelledby="tab-playback">
+  <h2>Mechanical and playback limitations</h2>
+  <figure class="shot">
+    <img src="images/stylus-groove.jpg" alt="Close black-and-white photograph of two cartridges tracking a record, showing the stylus in the groove at the start and end of the side.">
+    <figcaption>
+      <span class="shot-title">The same groove, two radii</span>
+      Playback is contact: a diamond tip must follow a wall that was cut by a chisel. Outer-groove wavelengths (left) are longer than inner-groove wavelengths (right) even though rotational speed is unchanged.
+      <span class="credit">Wikimedia Commons · Franz van Duns · CC BY-SA 4.0</span>
+    </figcaption>
+  </figure>
+  <table><thead><tr><th>Issue</th><th>Cause</th><th>Audible effect</th><th>Mitigation</th></tr></thead><tbody>
+  <tr><td>Wow</td><td>Slow rotational-speed variation</td><td>Gradual pitch wandering</td><td>Accurate motor control, platter inertia and sound mechanical condition</td></tr>
+  <tr><td>Flutter</td><td>Faster speed variation</td><td>Pitch roughness or shimmer</td><td>Stable drive, bearings and belt or idler system</td></tr>
+  <tr><td>Off-centre pressing</td><td>Spindle hole or groove not perfectly centred</td><td>Cyclic pitch rise and fall once per revolution</td><td>Manufacturing precision or replacement of a defective pressing</td></tr>
+  <tr><td>Tracing distortion</td><td>Playback stylus cannot exactly follow the geometry cut by the cutting stylus</td><td>Harmonic and intermodulation distortion</td><td>Suitable stylus profile, alignment and conservative cutting</td></tr>
+  <tr><td>Inner-groove distortion</td><td>Lower linear speed and compact wavelengths near the label</td><td>Harshness, sibilance and reduced clarity</td><td>Sequencing, level control, stylus geometry and alignment</td></tr>
+  <tr><td>Surface noise</td><td>Dust, static, wear, scratches and pressing imperfections</td><td>Hiss, crackle, clicks and pops</td><td>Cleaning, antistatic handling, careful storage and good pressing quality</td></tr>
+  <tr><td>Channel crosstalk</td><td>Imperfect separation in cartridge and groove playback</td><td>Reduced stereo separation</td><td>Cartridge quality, azimuth adjustment and sensible mix width</td></tr>
+  </tbody></table>
+  <h3>Tonearm and cartridge setup</h3>
+  <p>Tracking force, anti-skate, cartridge alignment, vertical tracking geometry, azimuth and stylus condition affect distortion and wear. An excellent pressing can sound poor on a badly configured turntable, while careful setup can recover more of the information present in the groove.</p>
+  <figure class="shot cover">
+    <img src="images/cartridge.jpg" alt="Close-up of an Ortofon cartridge on a headshell above a spinning LP, with the stylus guard still attached.">
+    <figcaption>
+      <span class="shot-title">Geometry is the last translator</span>
+      Alignment, azimuth, tracking force and anti-skate decide whether the stylus sits on both walls as intended. A guard like this exists because the diamond and cantilever are easy to wreck and expensive to replace.
+      <span class="credit">Wikimedia Commons · Jacques · CC BY 2.0</span>
+    </figcaption>
+  </figure>
+  <h3>Wear and robustness</h3>
+  <p>Playback is physical contact. Dirt, damaged styli and incorrect tracking force can accelerate wear. The production master must therefore work not only on a reference cutting-room system but across a broad range of consumer cartridges and tonearms.</p>
+</section>
+
+<section class="tab-panel" id="craft" role="tabpanel" aria-labelledby="tab-craft">
+  <h2>How constraints can support a better experience</h2>
+  <p class="lead">Vinyl's limitations do not make it technically superior. They can, however, force useful decisions that improve coherence, comfort and musical communication.</p>
+  <figure class="shot cover">
+    <img src="images/cutter-head.jpg" alt="Close-up of a Neumann cutter head suspended over a copper Direct Metal Mastering disc, with the cutting stylus at the groove.">
+    <figcaption>
+      <span class="shot-title">The moment sound becomes geometry</span>
+      A Neumann cutter head (here on a Direct Metal Mastering copper foil) is a pair of motors driving a heated stylus. Heat, helium cooling, chip suction and real-time pitch/depth control all sit between the master file and the groove you later play.
+      <span class="credit">Wikimedia Commons · 32bitmaschine · CC BY-SA 3.0</span>
+    </figcaption>
+  </figure>
+  <div class="grid">
+    <div class="card"><h3>A more stable low end</h3><p>Centring deep bass and correcting phase can make kick drum and bass feel focused and solid. The result may be more convincing even though some stereo width has been sacrificed.</p></div>
+    <div class="card"><h3>Controlled brightness</h3><p>De-essing and management of aggressive cymbals can reduce fatigue. The improvement arises from careful mastering rather than from an inherent inability of digital audio to reproduce treble.</p></div>
+    <div class="card"><h3>Selective dynamics</h3><p>Instead of maximizing loudness, an engineer may manage individual peaks and preserve useful contrasts. Some vinyl editions therefore sound more open than heavily limited digital releases.</p></div>
+    <div class="card"><h3>Deliberate sequencing</h3><p>Placing demanding tracks where the groove performs best can reinforce the dramatic shape of each side. The physical pause required to turn the record also creates an intentional midpoint.</p></div>
+  </div>
+  <h3>The mastering-by-constraint effect</h3>
+  <p>Digital production permits extreme bass, stereo expansion, brightness and limiting without immediate mechanical failure. Vinyl requires the engineer to ask whether each extreme serves the music. Optimization replaces simple maximization.</p>
+  <h3>Dedicated master versus format mythology</h3>
+  <p>When listeners prefer a vinyl edition, the decisive factor may be a different master rather than the physical medium itself. A vinyl-specific master may use less limiting, better-controlled high frequencies, more coherent bass and a deliberately chosen sequence. Comparing it with a louder digital master does not isolate the sound of vinyl; it compares two different engineering decisions.</p>
+  <h3>What excellent vinyl engineering requires</h3>
+  <ol>
+    <li>Start from a clean, high-resolution source without unnecessary digital clipping or limiting.</li>
+    <li>Inspect bass phase and stereo width rather than applying an indiscriminate mono rule.</li>
+    <li>Control sibilance and high-frequency peaks selectively.</li>
+    <li>Match cutting level and groove spacing to the actual programme length.</li>
+    <li>Sequence each side with declining linear speed in mind.</li>
+    <li>Make and inspect a reference cut where the project warrants it.</li>
+    <li>Validate pressing quality and listen on more than one realistic playback system.</li>
+  </ol>
+  <div class="callout"><strong>Balanced conclusion</strong>Vinyl can provide an excellent experience not because its distortions are intrinsically desirable, but because experienced engineers anticipate them, control them and sometimes use the resulting discipline to produce a more musically proportioned master.</div>
+</section>
+
+<section class="tab-panel" id="summary" role="tabpanel" aria-labelledby="tab-summary">
+  <h2>Consolidated reference</h2>
+  <table><thead><tr><th>Issue</th><th>Physical cause</th><th>Typical response</th><th>Potential experiential benefit</th></tr></thead><tbody>
+  <tr><td>Stereo bass instability</td><td>Large vertical modulation from L−R low-frequency energy</td><td>Centre or narrow deep bass; correct phase</td><td>Focused, stable low end</td></tr>
+  <tr><td>Heavy stereo drums</td><td>Combined transient, bass and phase demands</td><td>Selective transient control and low-band narrowing</td><td>Punch without unstable imaging</td></tr>
+  <tr><td>Inner-groove distortion</td><td>Declining linear speed</td><td>Place demanding tracks earlier; manage level and treble</td><td>More deliberate album sequence</td></tr>
+  <tr><td>Long side</td><td>Limited surface area</td><td>Lower cutting level and denser pitch</td><td>Encourages concise side structure</td></tr>
+  <tr><td>Sibilance and bright cymbals</td><td>Fine, rapid groove modulation</td><td>De-essing and dynamic high-frequency control</td><td>Smoother, less fatiguing tone</td></tr>
+  <tr><td>Extreme loudness</td><td>High groove velocity, heat and tracking demand</td><td>Peak management and moderated limiting</td><td>Potentially more breathing space</td></tr>
+  <tr><td>Bass size and surface noise</td><td>Physical groove excursion and mechanical noise floor</td><td>RIAA pre-emphasis and inverse playback equalization</td><td>Practical side length and usable signal-to-noise ratio</td></tr>
+  <tr><td>Wow, flutter and off-centre discs</td><td>Rotational and manufacturing errors</td><td>Good turntable and pressing quality</td><td>No intrinsic benefit; these are defects to minimize</td></tr>
+  </tbody></table>
+  <h3>Final assessment</h3>
+  <p>Vinyl mastering is the management of a chain of mechanical constraints. Groove geometry restricts stereo bass; constant rotational speed produces declining linear resolution; programme length competes with level and noise; high-frequency material challenges cutting and tracing; RIAA equalization makes the format practical; and playback quality depends on precise mechanics.</p>
+  <p>The best practitioners do not merely remove problems. They balance spectral energy, stereo image, dynamics, sequence and playback resilience in service of the music. Those choices can make a vinyl edition especially coherent and enjoyable. The lesson is broader than vinyl: technical constraints, when understood rather than ignored, can sharpen artistic and engineering judgement.</p>
+</section>
+</div>
+</main>
+<footer>
+  Standalone HTML memo. Tabs are keyboard accessible; all sections are expanded automatically when printed.
+  <details>
+    <summary>Image credits</summary>
+    <p>Photographs and the stereo-groove diagram are from Wikimedia Commons. The RIAA curves and transformation graphics are redrawn from the published time constants (3180 µs, 318 µs, 75 µs).</p>
+    <ul>
+      <li>12-inch LP and groove macro — Evan-Amos, public domain</li>
+      <li>Neumann VMS-70 lathe — VACANT FEVER, CC BY-SA 2.0</li>
+      <li>Record-press mould — geni, CC BY-SA 4.0</li>
+      <li>45/45 groove diagram — Retired electrician, CC0</li>
+      <li>SEM of LP grooves — Tbraunstein, CC BY-SA 3.0</li>
+      <li>Microscope groove close-up — Piano Piano!, CC BY 2.0</li>
+      <li>Dusty groove macro — Feelthelie, CC BY-SA 3.0</li>
+      <li>Phono preamp interior — Retired electrician, CC0</li>
+      <li>Technics turntable and dual-radius stylus photograph — Franz van Duns, CC BY-SA 4.0</li>
+      <li>Ortofon cartridge — Jacques, CC BY 2.0</li>
+      <li>Neumann DMM cutter head — 32bitmaschine, CC BY-SA 3.0</li>
+    </ul>
+  </details>
+</footer>
+<script>
+const buttons = Array.from(document.querySelectorAll('.tab-button'));
+const panels = Array.from(document.querySelectorAll('.tab-panel'));
+function activate(button) {
+    buttons.forEach((item) => {
+        const selected = item === button;
+        item.classList.toggle('active', selected);
+        item.setAttribute('aria-selected', String(selected));
+        item.setAttribute('tabindex', selected ? '0' : '-1');
+    });
+    panels.forEach((panel) => panel.classList.toggle('active', panel.id === button.getAttribute('aria-controls')));
+    history.replaceState(null, '', '#' + button.getAttribute('aria-controls'));
+}
+buttons.forEach((button, index) => {
+    button.addEventListener('click', () => activate(button));
+    button.addEventListener('keydown', (event) => {
+        if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+        event.preventDefault();
+        let target = index;
+        if (event.key === 'ArrowRight') target = (index + 1) % buttons.length;
+        if (event.key === 'ArrowLeft') target = (index - 1 + buttons.length) % buttons.length;
+        if (event.key === 'Home') target = 0;
+        if (event.key === 'End') target = buttons.length - 1;
+        buttons[target].focus();
+        activate(buttons[target]);
+    });
+});
+const initial = location.hash.slice(1);
+const initialButton = buttons.find((button) => button.getAttribute('aria-controls') === initial);
+if (initialButton) activate(initialButton);
+else buttons.forEach((button, index) => button.setAttribute('tabindex', index === 0 ? '0' : '-1'));
+
+(function () {
+    const slider = document.getElementById('riaa-freq');
+    if (!slider) return;
+    const F1 = 50.05, F2 = 500.5, F3 = 2122;
+    function mag(freq) {
+        const w = 2 * Math.PI * freq;
+        const h = (wn) => Math.hypot(1, w / wn);
+        return h(2 * Math.PI * F2) / (h(2 * Math.PI * F1) * h(2 * Math.PI * F3));
+    }
+    const mag1k = mag(1000);
+    function playDb(freq) {
+        return 20 * Math.log10(mag(freq) / mag1k);
+    }
+    function wavePoints(peak, cycles) {
+        const n = 180, width = 320, y0 = 45;
+        const pts = [];
+        for (let i = 0; i <= n; i += 1) {
+            const t = i / n;
+            pts.push(`${(t * width).toFixed(1)},${(y0 - peak * Math.sin(2 * Math.PI * cycles * t)).toFixed(1)}`);
+        }
+        return pts.join(' ');
+    }
+    function fmtFreq(freq) {
+        if (freq >= 1000) return `${(freq / 1000).toFixed(freq >= 10000 ? 1 : 2)} kHz`;
+        return `${Math.round(freq)} Hz`;
+    }
+    function fmtDb(db) {
+        const sign = db > 0.05 ? '+' : '';
+        return `${sign}${db.toFixed(1)} dB`;
+    }
+    function render() {
+        const freq = 10 ** Number(slider.value);
+        const pdb = playDb(freq);
+        const rdb = -pdb;
+        const recAmp = 10 ** (rdb / 20);
+        const groove = (1000 / freq) * recAmp;
+        const cycles = 1.6 + ((Math.log10(freq) - Math.log10(20)) / (Math.log10(20000) - Math.log10(20))) * 16;
+        const origPeak = 28;
+        const recPeak = Math.min(40, origPeak * recAmp);
+        document.getElementById('riaa-w0').setAttribute('points', wavePoints(origPeak, cycles));
+        document.getElementById('riaa-w1').setAttribute('points', wavePoints(recPeak, cycles));
+        document.getElementById('riaa-w2').setAttribute('points', wavePoints(origPeak, cycles));
+        document.getElementById('riaa-freq-read').textContent = fmtFreq(freq);
+        document.getElementById('riaa-rec').textContent = fmtDb(rdb);
+        document.getElementById('riaa-play').textContent = fmtDb(pdb);
+        document.getElementById('riaa-net').textContent = fmtDb(rdb + pdb);
+        document.getElementById('riaa-grv').textContent = `${groove >= 10 ? groove.toFixed(0) : groove >= 1 ? groove.toFixed(2) : groove.toFixed(2)}×`;
+        slider.setAttribute('aria-valuenow', String(Math.round(freq)));
+        const bar = document.getElementById('riaa-groove-bar');
+        const pct = Math.max(3, Math.min(100, 18 * Math.log10(groove / 0.05)));
+        bar.style.width = `${pct}%`;
+    }
+    slider.addEventListener('input', render);
+    render();
+}());
+</script>
+</body>
+</html>
